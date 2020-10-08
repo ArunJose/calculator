@@ -26,6 +26,9 @@ button {
 }
 
 #display {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin: .4rem;
+  text-align: right;
+  padding: .2em;
+  border: 1px solid black;
 }

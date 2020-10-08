@@ -1,15 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles.css";
 
 export default function App() {
+  const [currentNumber, setCurrentNumber] = useState("0");
+  const [numberInMemory, setNumberInMemory] = useState(undefined);
+  const [operation, setOperation] = useState(undefined);
+  const [wasLastButtonOperator, setWasLastButtonOperator] = useState(false);
+  const [lastOperation, setLastOperation] = useState(undefined);
   const handleButton = (e) => {
     console.log(e.target.innerText);
+    const buttonText = e.target.innerText;
+    if (!isNaN(Number(buttonText))) {
+      if (wasLastButtonOperator) {
+        setNumberInMemory(currentNumber);
+        setCurrentNumber(buttonText);
+      } else {
+        setCurrentNumber((prevNumber) => {
+          if (Number(prevNumber) === 0 && buttonText === "0") {
+            return prevNumber;
+          } else if (prevNumber === "0") {
+            return buttonText;
+          } else {
+            return `${prevNumber}${buttonText}`;
+          }
+        });
+      }
+      setWasLastButtonOperator(false);
+    } else if (buttonText === "C") {
+      setCurrentNumber("0");
+      setNumberInMemory(undefined);
+      setOperation(undefined);
+    } else if (buttonText === ".") {
+      if (currentNumber === "0") {
+        setCurrentNumber("0.");
+      } else if (!currentNumber.includes(".")) {
+        setCurrentNumber((prevNumber) => `${prevNumber}${buttonText}`);
+      }
+    } else {
+      if (operation === "+") {
+        setCurrentNumber(
+          (prevCurNum) => Number(prevCurNum) + Number(numberInMemory)
+        );
+      } else if (operation === "-") {
+        setCurrentNumber(
+          (prevCurNum) => Number(numberInMemory) - Number(prevCurNum)
+        );
+      } else if (operation === "/") {
+        setCurrentNumber(
+          (prevCurNum) => Number(numberInMemory) / Number(prevCurNum)
+        );
+      } else if (operation === "x") {
+        setCurrentNumber(
+          (prevCurNum) => Number(prevCurNum) * Number(numberInMemory)
+        );
+      }
+
+      setWasLastButtonOperator(true);
+      setNumberInMemory(currentNumber);
+      setLastOperation(operation);
+      setOperation(buttonText);
+      //setCurrentNumber("0");
+    }
+    console.log("currentNumber", currentNumber);
+    console.log("operation", operation);
+    console.log("numberinMemory", numberInMemory);
   };
   return (
     <div className="App">
       <h1>Calculator</h1>
       <div className="container">
-        <input type="text" id="display" />
+        <div id="display">{currentNumber}</div>
         <table>
           <tbody>
             <tr>
