@@ -10,8 +10,22 @@ export default function App() {
   const handleButton = (e) => {
     console.log(e.target.innerText);
     const buttonText = e.target.innerText;
-    if (!isNaN(Number(buttonText))) {
-      if (wasLastButtonOperator) {
+    console.log("was last button operator", wasLastButtonOperator);
+    if (
+      wasLastButtonOperator &&
+      (buttonText === "+" || buttonText === "x" || buttonText === "/")
+    ) {
+      setOperation(buttonText);
+    } else if (
+      wasLastButtonOperator &&
+      (operation === "+" || operation === "x" || operation === "/") &&
+      buttonText === "-"
+    ) {
+      setCurrentNumber("-");
+    } else if (!isNaN(Number(buttonText))) {
+      if (currentNumber === "-") {
+        setCurrentNumber(`-${buttonText}`);
+      } else if (wasLastButtonOperator) {
         setNumberInMemory(currentNumber);
         setCurrentNumber(buttonText);
       } else {
